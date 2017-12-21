@@ -1,11 +1,16 @@
+//C
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
+//POSIX
 #include <unistd.h>
 #include <sys/types.h> 
+//socket
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <assert.h>
+#include <arpa/inet.h>
+
 
 int main(int argc , char *argv[])
 {
@@ -21,7 +26,7 @@ int main(int argc , char *argv[])
     struct sockaddr_in serverInfo;
     memset(&serverInfo,0,sizeof(sockaddr_in));
     serverInfo.sin_family = PF_INET; //sockaddr_in is IPv4
-    serverInfo.sin_addr.s_addr = inet_addr("127.0.0.1"); //server's address
+    serverInfo.sin_addr.s_addr = htonl(INADDR_ANY);
     serverInfo.sin_port = htons(8700); //using port, htons(Host TO Network Short integer)
     int retval = bind(sockfd,(struct sockaddr *)&serverInfo,sizeof(serverInfo));
     assert(!retval);
@@ -29,7 +34,7 @@ int main(int argc , char *argv[])
     assert(!retval);
 
     //message
-    char message[100] = "welcome to server\n";
+    char message[100] = "server sends to client";
     char inputBuffer[100];
     ssize_t sz;
     while(1)
@@ -42,8 +47,9 @@ int main(int argc , char *argv[])
 
 	    sz = recv(client_fd,inputBuffer,sizeof(inputBuffer),0);
 	    sz = send(client_fd,message,sizeof(message),0);
-	    printf("Get: %s\n",inputBuffer);
+	    printf("receive form client: %s\n",inputBuffer);
 	    close(client_fd);
+        memset(message,0,100);
     }
     close(sockfd);
     return 0;

@@ -1,16 +1,18 @@
+//C
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
+//POSIX
 #include <unistd.h>
-#include <sys/types.h>
+#include <sys/types.h> 
+//socket
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <assert.h>
-
+#include <arpa/inet.h>
 
 int main(int argc , char *argv[])
 {
-
     //socket
     int server_fd = socket(AF_INET , SOCK_STREAM , 0);
     assert(server_fd >= 0);
@@ -29,17 +31,18 @@ int main(int argc , char *argv[])
     clientinfo.sin_port = htons(8700); //using port, htons(Host TO Network Short integer)
 
     //connect
-    int err = connect(server_fd,(struct sockaddr *)&clientinfo,sizeof(clientinfo));
-    if(err==-1){printf("Connection error");}
+    int retval = connect(server_fd,(struct sockaddr *)&clientinfo,sizeof(clientinfo));
+    //sucess return 0
+    assert(!retval);
 
     //Send a message to server
-    char message[] = {"Hi there"};
+    char message[] = "client sends to server";
     char receiveMessage[100] = {};
     send(server_fd,message,sizeof(message),0);
     recv(server_fd,receiveMessage,sizeof(receiveMessage),0);
 
-    printf("%s",receiveMessage);
-    printf("close Socket\n");
+    printf("%s\n",receiveMessage);
+    printf("close Socket...\n");
     close(server_fd);
     return 0;
 }
