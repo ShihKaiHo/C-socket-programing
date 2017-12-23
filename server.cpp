@@ -17,6 +17,8 @@
 
 int main(int argc , char *argv[])
 {
+	assert(argc>1);
+	int port = atoi(argv[1]);
     int sockfd = 0;
     sockfd = socket(AF_INET , SOCK_STREAM , 0);
     assert(sockfd >= 0);
@@ -30,7 +32,7 @@ int main(int argc , char *argv[])
     memset(&server_addr,0,sizeof(sockaddr_in));
     server_addr.sin_family = PF_INET; //sockaddr_in is IPv4
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    server_addr.sin_port = htons(8700); //using port, htons(Host TO Network Short integer)
+    server_addr.sin_port = htons(port); //using port, htons(Host TO Network Short integer)
     int retval = bind(sockfd,(struct sockaddr *)&server_addr,sizeof(server_addr));
     assert(!retval);
     retval = listen(sockfd,1024);
@@ -91,9 +93,7 @@ int main(int argc , char *argv[])
 	            }
 	            else // sz > 0，表示有新資料讀入
 	            {
-	            	printf("\E[0;31;40m");
 	            	printf("from fd [%d]: %s", fd, buffer); memset(buffer,0,sz);
-	            	printf("\E[0;37;40m");
 	            }
 	        }
 	    }

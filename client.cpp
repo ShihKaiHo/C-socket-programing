@@ -15,6 +15,8 @@
 
 int main(int argc , char *argv[])
 {
+	assert(argc>1);
+	int port = atoi(argv[1]);
     //socket
     int server_fd = socket(AF_INET , SOCK_STREAM , 0);
     assert(server_fd >= 0);
@@ -30,7 +32,7 @@ int main(int argc , char *argv[])
 
     //localhost test
     clientinfo.sin_addr.s_addr = inet_addr("127.0.0.1"); //server's address
-    clientinfo.sin_port = htons(8700); //using port, htons(Host TO Network Short integer)
+    clientinfo.sin_port = htons(port); //using port, htons(Host TO Network Short integer)
 
     //connect
     int retval = connect(server_fd,(struct sockaddr *)&clientinfo,sizeof(clientinfo));
