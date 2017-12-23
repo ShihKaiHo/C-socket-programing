@@ -11,6 +11,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define BUFFER_SIZE 1024
+
 int main(int argc , char *argv[])
 {
     //socket
@@ -35,13 +37,20 @@ int main(int argc , char *argv[])
     //sucess return 0
     assert(!retval);
 
+    char buffer[BUFFER_SIZE]; memset(buffer,0,BUFFER_SIZE);
+    char message[] = "a client client connect.\n";
+    send(server_fd,message,strlen(message)+1,0);
+    recv(server_fd,buffer,BUFFER_SIZE,0);
+    printf("from server: %s\n", buffer); memset(buffer,0,BUFFER_SIZE);
+    ssize_t sz;
     //Send a message to server
-    char message[] = "client sends to server";
-    char receiveMessage[100] = {};
-    send(server_fd,message,sizeof(message),0);
-    recv(server_fd,receiveMessage,sizeof(receiveMessage),0);
-
-    printf("%s\n",receiveMessage);
+    while(1)
+    {
+        read(STDIN_FILENO,buffer,BUFFER_SIZE);
+        if(!strcmp(buffer,"exit\n"))
+            break;
+        send(server_fd,buffer,strlen(buffer)+1,0); memset(buffer,0,BUFFER_SIZE);
+    }
     printf("close Socket...\n");
     close(server_fd);
     return 0;

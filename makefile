@@ -10,3 +10,6 @@ client: client.cpp
 
 server: server.cpp
 	$(CC) -o $@ $< $(flag)
+
+clean:
+	rm -f server client *.o
